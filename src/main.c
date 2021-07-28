@@ -12,7 +12,7 @@ int main(void)
 		{4}
 	};
 	int num_rows = sizeof(mat) / sizeof(mat[0]);
-	dprint(1,1,C_BLACK,"%s");
+	dprint(1,1,C_BLACK,"%s"int);
 	dupdate();
 
 	getkey();
