@@ -2,23 +2,22 @@
 #include <gint/keyboard.h>
 #include <stdio.h>
 
-void matmul(int mat1[10][10], int mat2[10][10], int row1, int row2, int col1, int col2);
-int mult[10][10];
+void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1, int col2);
+float mult[10][10];
 
 int main(void){
 	dclear(C_WHITE);
-	int points[10][10] = {
-		{1,2},
+	float points[10][10] = {
+		{1.1,2},
 		{2,3},
 	};
-	int matrixthing[10][10] = {
+	float matrixthing[10][10] = {
 		{6, 5},
 		{5, 6},
 	};
-	char answer[10];
+	char answer[50];
 	matmul(matrixthing, points,2,2,2,2);
-	sprintf(answer, "%d", mult[0][0]);
-	dprint(1,1,C_BLACK,answer);
+	dpixel(mult[0][0],1,C_BLACK);
 	dupdate();
 
 	getkey();
@@ -26,13 +25,14 @@ int main(void){
 }
 
 // Function to multiply both matrices
-void matmul(int mat1[10][10], int mat2[10][10], int row1, int row2, int col1, int col2){
+void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1, int col2){
 
 	if(col1 != row2){
 		return;
 	}
 
-	int i,j,k,sum;
+	int i,j,k;
+	float sum;
 
 	// Multiplying matrix firstMatrix and secondMatrix and storing in array mult.
 	for(i = 0; i < row1; ++i)
