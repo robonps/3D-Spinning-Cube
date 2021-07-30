@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 
-void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1, int col2);
-float mult[10][10];
+void matmul(float mat1[9][9], float mat2[9][9], int row1, int row2, int col1, int col2, float output[9][9]);
+void matcp(float input[9][9], float output[9][9], int row, int col);
 
 int main(void){
 
@@ -28,14 +28,13 @@ int main(void){
 	float offsetY = 32;
 	float skew = 0;
 
-	bool exit = true;
 	bool renderEdges = true;
 	float pix = 12;
 
 	int i,j;
 	
 
-	float points[10][10] = {
+	float points[9][9] = {
 		{1, 1, -1},
 		{-1, 1, -1},
 		{-1, -1, -1},
@@ -46,7 +45,7 @@ int main(void){
 		{1, -1, 1}
 	};
 
-	float edges[15][15] = {
+	float edges[12][12] = {
 		{1, 2},
 		{2, 3},
 		{3, 4},
@@ -61,55 +60,56 @@ int main(void){
 		{6, 2}
 	};
 
-	float point[10][10];
-	float pos[10][10];
+	float point[9][9];
+	float pos[9][9];
 	int pointslen = 8;
 	int edgeslen = 12;
+	float multOutput[9][9];
 
-	while(exit) {
-		float offset[10][10] = {
+	while(true) {
+		float offset[9][9] = {
 				{1, 0, 0, offsetX},
 				{0, -1, 0, offsetY},
 				{0, 0, 1, 0},
 				{0, 0, 0, 1}
 		};
 
-		float p[10][10] = {
+		float p[9][9] = {
 				{(f*128)/(2*Px), skew, 0, 0},
 				{0, (f*64)/(2*Py), 0, 0},
 				{0, 0, -1, 0},
 				{0, 0, 0, 1}
 		};
 
-		float c[10][10] = {
+		float c[9][9] = {
 				{1, 0, 0, -Cx},
 				{0, 1, 0, -Cy},
 				{0, 0, 1, -Cz},
 				{0, 0, 0, 1}
 		};
 
-		float Rx[10][10] = {
+		float Rx[9][9] = {
 				{1, 0, 0, 0},
 				{0, cos(RotX), -sin(RotX), 0},
 				{0, sin(RotX), cos(RotX), 0},
 				{0, 0, 0, 1}
 		};
 
-		float Ry[10][10] = {
+		float Ry[9][9] = {
 				{cos(RotY), 0, sin(RotY), 0},
 				{0, 1, 0, 0},
 				{-sin(RotY), 0, cos(RotY), 0},
 				{0, 0, 0, 1}
 		};
 
-		float Rz[10][10] = {
+		float Rz[9][9] = {
 				{cos(RotZ), -sin(RotZ), 0, 0},
 				{sin(RotZ), cos(RotZ), 0, 0},
 				{0, 0, 1, 0},
 				{0, 0, 0, 1}
 		};
 
-		float g[10][10] = {
+		float g[9][9] = {
 				{1, 0, 0, -Gx},
 				{0, 1, 0, -Gy},
 				{0, 0, 1, -Gz},
@@ -120,32 +120,32 @@ int main(void){
 				point[j][0] = points[i][j];
 			}
 			point[3][0] = 1;
-			matmul(g, point, 4, 4, 4, 1);
-			float point1[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			matmul(Rz, point1, 4, 4, 4, 1);
-			float point2[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			matmul(Ry, point2, 4, 4, 4, 1);
-			float point3[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			matmul(Rx, point3, 4, 4, 4, 1);
-			float point4[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			matmul(c, point4, 4, 4, 4, 1);
-			float point5[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			matmul(p, point5, 4, 4, 4, 1);
-			float point6[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			float n[10][10] = {
-				{1/point6[2][0], 0, 0, 0},
-				{0, 1/point6[2][0], 0, 0},
+			matmul(g, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			matmul(Rz, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			matmul(Ry, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			matmul(Rx, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			matmul(c, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			matmul(p, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			float n[9][9] = {
+				{1/point[2][0], 0, 0, 0},
+				{0, 1/point[2][0], 0, 0},
 				{0, 0, 1, 0},
 				{0, 0, 0, 1}
 			
 			};
-			matmul(n, point6, 4, 4, 4, 1);
-			float point7[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			matmul(offset, point7, 4, 4, 4, 1);
-			float point8[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			pos[i][0] = point8[0][0];
-			pos[i][1] = point8[1][0];
-			pos[i][2] = point8[2][0];
+			matmul(n, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			matmul(offset, point, 4, 4, 4, 1, multOutput);
+			matcp(multOutput, point, 4, 1);
+			pos[i][0] = point[0][0];
+			pos[i][1] = point[1][0];
+			pos[i][2] = point[2][0];
 
 		}
 		dclear(C_WHITE);
@@ -165,14 +165,21 @@ int main(void){
 		RotY = RotY + 0.01;
 		RotZ = RotZ + 0.01;
 		dupdate();
-	}
 
-	getkey();
-	return 1;
+		int keyPressed = get_inputs();
+		if(keyPressed == 1){
+			return 1;
+		}else if(keyPressed == 2){
+			Cz = Cz - 0.5;
+		}else if(keyPressed == 3){
+			Cz = Cz + 0.5;
+		}
+
+	}
 }
 
 // Function to multiply both matrices
-void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1, int col2){
+void matmul(float mat1[9][9], float mat2[9][9], int row1, int row2, int col1, int col2, float output[9][9]){
 
 	if(col1 != row2){
 		return;
@@ -191,7 +198,30 @@ void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1
 			{
 				sum += mat1[i][k] * mat2[k][j];
 			}
-			mult[i][j] = sum;
+			output[i][j] = sum;
 		}
+	}
+}
+
+void matcp(float input[9][9], float output[9][9], int row, int col){
+	int i,j;
+	for(i = 0; i < row; ++i){
+		for(j = 0; j < col; ++j){
+			output[i][j] = input[i][j];
+		}
+	}
+}
+
+int get_inputs(void){
+	int opt = GETKEY_DEFAULT & ~GETKEY_REP_ALL & GETKEY_MENU & GETKEY_MOD_SHIFT & GETKEY_MOD_ALPHA;
+	int timeout = 1;
+	while(1){
+		key_event_t ev = getkey_opt(opt, &timeout);
+		if(ev.type == KEYEV_NONE) return -1;
+		
+		int key = ev.key;
+		if(key == KEY_MENU) return 1;
+		if(key == KEY_SHIFT) return 2;
+		if(key == KEY_ALPHA) return 3;
 	}
 }
