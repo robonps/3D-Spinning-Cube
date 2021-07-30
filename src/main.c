@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 
-void matmul(float mat1[16][16], float mat2[16][16], int row1, int row2, int col1, int col2);
-float mult[16][16];
+void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1, int col2);
+float mult[10][10];
 
 int main(void){
 
@@ -29,13 +29,13 @@ int main(void){
 	float skew = 0;
 
 	bool exit = true;
-	bool renderEdges = false;
+	bool renderEdges = true;
 	float pix = 12;
 
 	int i,j;
 	
 
-	float points[16][16] = {
+	float points[10][10] = {
 		{1, 1, -1},
 		{-1, 1, -1},
 		{-1, -1, -1},
@@ -46,7 +46,7 @@ int main(void){
 		{1, -1, 1}
 	};
 
-	float edges[16][16] = {
+	float edges[15][15] = {
 		{1, 2},
 		{2, 3},
 		{3, 4},
@@ -61,55 +61,55 @@ int main(void){
 		{6, 2}
 	};
 
-	float point[16][16];
-	float pos[16][16];
+	float point[10][10];
+	float pos[10][10];
 	int pointslen = 8;
 	int edgeslen = 12;
 
 	while(exit) {
-		float offset[16][16] = {
+		float offset[10][10] = {
 				{1, 0, 0, offsetX},
 				{0, -1, 0, offsetY},
 				{0, 0, 1, 0},
 				{0, 0, 0, 1}
 		};
 
-		float p[16][16] = {
+		float p[10][10] = {
 				{(f*128)/(2*Px), skew, 0, 0},
 				{0, (f*64)/(2*Py), 0, 0},
 				{0, 0, -1, 0},
 				{0, 0, 0, 1}
 		};
 
-		float c[16][16] = {
+		float c[10][10] = {
 				{1, 0, 0, -Cx},
 				{0, 1, 0, -Cy},
 				{0, 0, 1, -Cz},
 				{0, 0, 0, 1}
 		};
 
-		float Rx[16][16] = {
+		float Rx[10][10] = {
 				{1, 0, 0, 0},
 				{0, cos(RotX), -sin(RotX), 0},
 				{0, sin(RotX), cos(RotX), 0},
 				{0, 0, 0, 1}
 		};
 
-		float Ry[16][16] = {
+		float Ry[10][10] = {
 				{cos(RotY), 0, sin(RotY), 0},
 				{0, 1, 0, 0},
 				{-sin(RotY), 0, cos(RotY), 0},
 				{0, 0, 0, 1}
 		};
 
-		float Rz[16][16] = {
+		float Rz[10][10] = {
 				{cos(RotZ), -sin(RotZ), 0, 0},
 				{sin(RotZ), cos(RotZ), 0, 0},
 				{0, 0, 1, 0},
 				{0, 0, 0, 1}
 		};
 
-		float g[16][16] = {
+		float g[10][10] = {
 				{1, 0, 0, -Gx},
 				{0, 1, 0, -Gy},
 				{0, 0, 1, -Gz},
@@ -121,18 +121,18 @@ int main(void){
 			}
 			point[3][0] = 1;
 			matmul(g, point, 4, 4, 4, 1);
-			float point1[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point1[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			matmul(Rz, point1, 4, 4, 4, 1);
-			float point2[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point2[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			matmul(Ry, point2, 4, 4, 4, 1);
-			float point3[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point3[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			matmul(Rx, point3, 4, 4, 4, 1);
-			float point4[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point4[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			matmul(c, point4, 4, 4, 4, 1);
-			float point5[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point5[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			matmul(p, point5, 4, 4, 4, 1);
-			float point6[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
-			float n[16][16] = {
+			float point6[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float n[10][10] = {
 				{1/point6[2][0], 0, 0, 0},
 				{0, 1/point6[2][0], 0, 0},
 				{0, 0, 1, 0},
@@ -140,9 +140,9 @@ int main(void){
 			
 			};
 			matmul(n, point6, 4, 4, 4, 1);
-			float point7[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point7[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			matmul(offset, point7, 4, 4, 4, 1);
-			float point8[16][16] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
+			float point8[10][10] = {{mult[0][0]},{mult[1][0]},{mult[2][0]},{mult[3][0]}};
 			pos[i][0] = point8[0][0];
 			pos[i][1] = point8[1][0];
 			pos[i][2] = point8[2][0];
@@ -153,12 +153,13 @@ int main(void){
 			float d = pix / pos[i][2] / 2;
 			if(renderEdges){
 				for(j = 0; j < edgeslen; ++j){
-					int x1 = edges[j][0];
-					int x2 = edges[j][1];
-					//dline(pos[x1][0] - d, pos[x1][1] - d, pos[x2][0] - d, pos[x2][1] - d, C_BLACK);
+					int x1 = edges[j][0] - 1;
+					int x2 = edges[j][1] - 1;
+					dline(pos[x1][0] - d, pos[x1][1] - d, pos[x2][0] - d, pos[x2][1] - d, C_BLACK);
 				}
+			}else{
+				dpixel(pos[i][0] - d, pos[i][1] - d, C_BLACK);
 			}
-			dpixel(pos[i][0] - d, pos[i][1] - d, C_BLACK);
 		}
 		RotX = RotX + 0.01;
 		RotY = RotY + 0.01;
@@ -171,7 +172,7 @@ int main(void){
 }
 
 // Function to multiply both matrices
-void matmul(float mat1[16][16], float mat2[16][16], int row1, int row2, int col1, int col2){
+void matmul(float mat1[10][10], float mat2[10][10], int row1, int row2, int col1, int col2){
 
 	if(col1 != row2){
 		return;
